@@ -1,38 +1,45 @@
-import React, { useContext } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
-import LoginForm from '../components/auth/LoginForm'
-import { AuthContext } from '../auth/AuthProvider'
-export default function Login() {
-    const { user } = useContext(AuthContext)
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-    let navigate = useNavigate()
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-    const returnToHome = (event) => {
-        event.preventDefault()
-        navigate("/")
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      localStorage.setItem('token', res.data.token);
+      navigate('/dashboard');
+    } catch (err) {
+      alert('Login failed');
     }
-    // If user is logged in, show "You are already logged in"
-    if(user) {
-        return (
-            <div>You are already logged in.</div>
-        )
-    }
-    return (
-        <div>
-            <div>Login</div>
-            <NavLink to="/">Go back</NavLink>
-            <Link to="/register">Register</Link>
-            <button onClick={returnToHome}>Button Click</button>
-            <button onClick={
-                (event) => {
-                    returnToHome(event)
-                }
-            }>Button Click Callback</button>
-            
-            
-            <div>
-                <LoginForm/>
-            </div>
-        </div>
-    )
+  };
+
+  return (
+    <div className="flex items-center justify-center h-screen bg-gray-950">
+      <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <h2 className="text-2xl font-bold mb-6 text-center">Admin Login</h2>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full mb-4 px-3 py-2 rounded bg-gray-700 text-white"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full mb-6 px-3 py-2 rounded bg-gray-700 text-white"
+        />
+        <button className="w-full bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Login</button>
+      </form>
+    </div>
+  );
 }
+
+export default Login;

@@ -1,45 +1,110 @@
-import React, { useState, useEffect } from 'react';
-import RegisterForm from '../components/auth/RegisterForm';
+import React, { useState } from 'react';
 
-export default function Register() {
-  // Simulated user login status (replace with actual auth logic)
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+export default function RegisterForm() {
+  const [formData, setFormData] = useState({
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-  // Example: check login status on component mount (replace with real logic)
-  useEffect(() => {
-    // Simulate fetching login state, e.g., from localStorage or API
-    const loggedIn = false; // change to true to test logged-in state
-    setIsLoggedIn(loggedIn);
-  }, []);
+  const [error, setError] = useState('');
+
+  const handleChange = e => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError('');
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    // Basic validation: passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    // TODO: Submit data to backend here (e.g., axios post)
+
+    alert(`Registering user: ${formData.username} with email: ${formData.email}`);
+  };
 
   return (
-    <div
-      style={{
-        maxWidth: '400px',
-        margin: '40px auto',
-        padding: '20px',
-        borderRadius: '10px',
-        boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
-        background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
-        color: 'white',
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        textAlign: 'center',
-      }}
-    >
-      <h1 style={{ marginBottom: '20px', fontWeight: '700' }}>Create Your Account</h1>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+        style={inputStyle}
+      />
 
-      {isLoggedIn ? (
-        <p style={{ fontSize: '18px', fontWeight: '600' }}>
-          You are already logged in.
-        </p>
-      ) : (
-        <>
-          <p style={{ marginBottom: '20px', fontSize: '16px' }}>
-            Please fill in the details below to register.
-          </p>
-          <RegisterForm />
-        </>
+      <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        value={formData.username}
+        onChange={handleChange}
+        required
+        style={inputStyle}
+      />
+
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+        style={inputStyle}
+      />
+
+      <input
+        type="password"
+        name="confirmPassword"
+        placeholder="Confirm Password"
+        value={formData.confirmPassword}
+        onChange={handleChange}
+        required
+        style={inputStyle}
+      />
+
+      {error && (
+        <div style={{ color: '#ff4d4f', fontWeight: '600', textAlign: 'center' }}>
+          {error}
+        </div>
       )}
-    </div>
+
+      <button type="submit" style={buttonStyle}>
+        Register
+      </button>
+    </form>
   );
 }
+
+// Simple inline styles
+const inputStyle = {
+  padding: '10px',
+  borderRadius: '6px',
+  border: 'none',
+  outline: 'none',
+  fontSize: '1rem',
+};
+
+const buttonStyle = {
+  padding: '12px',
+  borderRadius: '6px',
+  border: 'none',
+  backgroundColor: '#4B0082',
+  color: 'white',
+  fontWeight: '700',
+  cursor: 'pointer',
+  fontSize: '1.1rem',
+  transition: 'background-color 0.3s ease',
+};
+
+buttonStyle[':hover'] = {
+  backgroundColor: '#6a11cb',
+};

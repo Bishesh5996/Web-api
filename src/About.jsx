@@ -8,21 +8,21 @@ import UsersCRUD from './components/admin/UsersCRUD';
 function App() {
   return (
     <Routes>
-      {/* Redirect root to login */}
+      {/* Automatic redirect from root */}
       <Route path="/" element={<Navigate to="/admin-login" replace />} />
-
-      {/* Public route */}
+      
+      {/* Public routes */}
       <Route path="/admin-login" element={<AdminLogin />} />
-
-      {/* Protected routes */}
+      
+      {/* Protected admin routes */}
       <Route element={<PrivateRoute />}>
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/admin/products" element={<ProductCRUD />} />
         <Route path="/admin/users" element={<UsersCRUD />} />
       </Route>
-
-      {/* Fallback 404 */}
-      <Route path="*" element={<div className="text-center mt-10 text-red-600 text-xl">404 - Page Not Found</div>} />
+      
+      {/* 404 catch-all */}
+      <Route path="*" element={<div>404 - Page Not Found</div>} />
     </Routes>
   );
 }
